@@ -38,6 +38,89 @@ def home():
         f"instaloader  --login={app.config['INSTA_USER_NAME']} --password={app.config['INSTA_PASS']}")
     return render_template("main.html")
 
+@app.route('/youtube')
+def youtube():
+    return render_template("yt.html")
+
+
+@app.route('/instagram')
+def instagram():
+    (f"instaloader  --login={app.config['INSTA_USER_NAME']} --password={app.config['INSTA_PASS']}")
+    return render_template("insta.html")
+
+
+@ app.route('/facebook')
+def facebook():
+    return render_template("fb.html")
+
+
+@ app.route('/aboutus')
+def aboutus():
+    return render_template("about.html")
+
+
+@ app.route('/contactus')
+def contactus():
+    return render_template("contact.html", site_key=str(app.config['SITE_KEY']))
+
+
+@ app.route("/download-youtube-video", methods=["GET", "POST"])
+def youtube_video():
+    if(request.method == "POST"):
+        youtube_url = request.form["link"]
+        if(youtube_url != ""):
+            try:
+                x = r.get(youtube_url)
+            except:
+                flash("Enter Valid Youtube Link!!!", "danger")
+                return redirect('youtube')
+            video = pafy.new(youtube_url)
+            stream = video.streams
+            fname = stream[0].generate_filename()
+            try:
+                stream[0].download()
+            except:
+                flash("Something Went Wrong! Please try again later.", "danger")
+                return redirect('youtube')
+            try:
+                return send_file(fname, as_attachment=True)
+            except FileNotFoundError:
+                flash("Something Went Wrong! Please try again later.", "danger")
+                return redirect('youtube')
+        flash("Enter Valid Youtube Link!!!", "danger")
+        return redirect('youtube')
+    return render_template("page1.html")
+
+
+def is_human(captcha_response):
+    secret = str(app.config['SECRET_KEY'])
+    payload = {'response': captcha_response, 'secret': secret}
+    response = r.post(
+        "https://www.google.com/recaptcha/api/siteverify", payload)
+    response_text = json.loads(response.text)
+    return response_text['success']
+
+
+@app.route('/send-mail', methods=["GET", "POST"])
+def contact_mail():
+    if(request.method == "POST"):
+        name1 = request.form.get('name')
+        email1 = request.form.get('email')
+        msg1 = request.form.get('message')
+        captcha_response = request.form['g-recaptcha-response']
+        if is_human(captcha_response):
+            msg = Message("Email from "+name1+"(easyDownloads2021)", sender=app.config['MAIL_USERNAME'],
+                          recipients=[app.config['MAIL_USERNAME']])
+            msg.body = "\nName : " + \
+                str(name1)+"\nEmail Id : "+str(email1) + \
+                "\nMessage : "+str(msg1)+"\n"
+            mail.send(msg)
+            flash("Your feedback has been recorded successfully!!!", "success")
+            return redirect(url_for('contactus'))
+        else:
+            flash("Sorry Please Check I'm not  a Robot!!!", "danger")
+    return redirect(url_for('contactus'))
+
 
 if __name__ == '__main__':
     app.run()
