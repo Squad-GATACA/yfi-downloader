@@ -92,6 +92,45 @@ def youtube_video():
     return render_template("page1.html")
 
 
+@app.route('/download-instagram-video', methods=["GET", "POST"])
+def instagram_video():
+    if(request.method == "POST"):
+        url = request.form["link"]
+        ftype = request.form["filetype"]
+        if(ftype == "POST"):
+            if(url != ""):
+                try:
+                    u = url.split('/')[-2]
+                    if(len(u) == 11):
+                        os.system(
+                            f"instaloader --filename-pattern={u} --login={app.config['INSTA_USER_NAME']} --password={app.config['INSTA_PASS']} -- -{u}")
+
+                        fname = u.strip()
+                        u_jpg = "-".strip()+u.strip()+"/"+fname+".jpg"
+                        u_mp4 = "-".strip()+u.strip()+"/"+fname+".mp4"
+                        if(os.path.isfile(u_mp4)):
+                            return send_file(u_mp4, as_attachment=True)
+                        else:
+                            return send_file(u_jpg, as_attachment=True)
+                    else:
+                        flash(
+                            "Private account's post cannot be downloaded!!!", "danger")
+                        return redirect('instagram')
+                except IndexError:
+                    flash("Invalid Url!!!", "danger")
+                    return redirect('instagram')
+            flash(
+                "This feature is not available right now!!! We are working on it.", "danger")
+            return redirect('instagram')
+        elif(ftype == "PROFILE-PICTURE"):
+            flash(
+                "This feature is not available right now!!! We are Working on it.", "danger")
+            return redirect('instagram')
+        else:
+            flash("Invalid Content Type!!!", "danger")
+            return redirect('instagram')
+    return redirect('instagram')
+
 def is_human(captcha_response):
     secret = str(app.config['SECRET_KEY'])
     payload = {'response': captcha_response, 'secret': secret}
