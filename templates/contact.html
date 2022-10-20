@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="../static/images/fav-gataca.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../static/stylesheets/contact.css">
+    <title>easyDownloads.com-Contact</title>
+    <style>
+        .g-recaptcha {
+            transform: scale(1);
+            -webkit-transform: scale(1);
+            transform-origin: 0 0;
+            -webkit-transform-origin: 0 0;
+        }
+
+        @media (max-width:767px) {
+            .g-recaptcha {
+                transform: scale(.6);
+                -webkit-transform: scale(0.6);
+                transform-origin: 0 0;
+                -webkit-transform-origin: 0 0;
+
+            }
+
+        }
+    </style>
+</head>
+
+<body>
+    <section>
+        <div>
+            <span id="link"><a href="/"><strong>Home</strong></a></span>
+        </div>
+    </section>
+
+    <section class="contact-clean">
+        <div class="container">
+            <form action="/send-mail" method="POST">
+                <h2 class="text-center">Reach Us</h2>
+                <div>
+                    {% with messages=get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category,message in messages %}
+                    <div class="alert alert-{{category}} alert-dismissible" style="margin-bottom: 15px;">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>{{message}}</strong>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                <div class="form-group"><input class="form-control" type="text" name="name" placeholder="Name"
+                        required="" autocomplete="off">
+                </div>
+                <div class="form-group"><input class="form-control" type="email" name="email" placeholder="Email"
+                        required="" autocomplete="off">
+                </div>
+                <div class="form-group"><textarea class="form-control" name="message" type="text" placeholder="Message"
+                        rows="14" required="" minlength="10" autocomplete="off"></textarea>
+                </div>
+                <div>
+                    <div class="g-recaptcha" data-sitekey="{{site_key}}">
+                    </div>
+                </div>
+
+                <div class="form-group"><button class="btn btn-primary" type="submit">send </button></div>
+
+            </form>
+        </div>
+    </section>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
+</body>
+
+</html>

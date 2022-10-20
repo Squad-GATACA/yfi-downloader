@@ -38,6 +38,30 @@ def home():
         f"instaloader  --login={app.config['INSTA_USER_NAME']} --password={app.config['INSTA_PASS']}")
     return render_template("main.html")
 
+@app.route('/youtube')
+def youtube():
+    return render_template("yt.html")
+
+
+@app.route('/instagram')
+def instagram():
+    (f"instaloader  --login={app.config['INSTA_USER_NAME']} --password={app.config['INSTA_PASS']}")
+    return render_template("insta.html")
+
+
+@ app.route('/facebook')
+def facebook():
+    return render_template("fb.html")
+
+
+@ app.route('/aboutus')
+def aboutus():
+    return render_template("about.html")
+
+
+@ app.route('/contactus')
+def contactus():
+    return render_template("contact.html", site_key=str(app.config['SITE_KEY']))
 
 if __name__ == '__main__':
     app.run()
